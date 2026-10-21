@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriNav GPS Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f4f4f9; }
+        button { padding: 15px 30px; font-size: 18px; background-color: #2E7D32; color: white; border: none; border-radius: 5px; cursor: pointer; margin: 10px; width: 90%; max-width: 300px;}
+        .result { margin-top: 20px; padding: 15px; background-color: white; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h2>اختبار الموقع الجغرافي</h2>
+    
+    <button onclick="getLocation()">1. طلب إذن الموقع (GPS)</button>
+    
+    <div class="result" id="location-result">لم يتم طلب الموقع بعد.</div>
+
+    <br><hr><br>
+    
+    <button onclick="window.location.href='https://sidgifa-source.github.io/AgriNav_app/'">2. فتح موقع AgriNav الأصلي</button>
+
+    <script>
+        function getLocation() {
+            const resultDiv = document.getElementById('location-result');
+            resultDiv.innerHTML = "جاري تحديد الموقع...";
+
+            if (!navigator.geolocation) {
+                resultDiv.innerHTML = "تطبيقك لا يدعم تحديد الموقع.";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    resultDiv.innerHTML = `<strong>تم تحديد الموقع بنجاح!</strong><br>خط العرض: ${lat}<br>خط الطول: ${lon}`;
+                },
+                (error) => {
+                    let errorMsg = "";
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED: errorMsg = "تم رفض الإذن."; break;
+                        case error.POSITION_UNAVAILABLE: errorMsg = "الموقع غير متاح (تأكد من تشغيل GPS)."; break;
+                        case error.TIMEOUT: errorMsg = "انتهت مهلة الطلب."; break;
+                        default: errorMsg = "خطأ غير معروف."; break;
+                    }
+                    resultDiv.innerHTML = `<span style="color:red;">خطأ: ${errorMsg}</span>`;
+                }
+            );
+        }
+    </script>
+</body>
+</html>
